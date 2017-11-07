@@ -1,3 +1,4 @@
+
 class ChessBoardFileReader:
 
     def __init__(self):
