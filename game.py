@@ -21,8 +21,6 @@ class Game:
         self.player_piece = {Player.HUMAN : ChessBoard.WHITE_PAWN, Player.AI : ChessBoard.BLACK_PAWN}
 
     def print_current_turn(self):
-        if self.game_state == GameState.WRONG_MOVE:
-            print("Try again!")
 
         if self.turn == Player.AI:
             print ("It's the computer's turn!")
@@ -53,11 +51,16 @@ class Game:
                 pass
 
 
-
-            self.turn = (self.turn +1) % 2
+            if self.game_state != GameState.WRONG_MOVE:
+                self.turn = (self.turn +1) % 2
+            else:
+                print "Enter a correct move!"
 
     def get_user_move(self):
         move = raw_input("Enter your move: ")
+        if len(move) != 5:
+            print "Wrong input format for move!"
+            return None
         moves = move.split(" ")
         move_tuples = [(),()]
         move_tuples[0] = (int(moves[0][0]), moves[0][1])
@@ -65,5 +68,8 @@ class Game:
         return move_tuples
 
     def make_move(self,move):
-        self.chessboard.move_piece(move[0], move[1])
+        if move != None:
+            self.chessboard.move_piece(move[0], move[1])
+        else:
+            self.game_state = GameState.WRONG_MOVE
 
