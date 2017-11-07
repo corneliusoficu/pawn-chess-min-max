@@ -57,30 +57,15 @@ class ChessBoard:
     pawn chess game validation must be done beforehand!"""
 
     def move_piece(self, from_tuple, to_tuple):
-        try:
+
             from_row = from_tuple[0]
             from_col = ord(from_tuple[1]) - ord('A')
 
             to_row = to_tuple[0]
             to_col = ord(to_tuple[1]) - ord('A')
 
-            if from_row < 0 or from_row >= ChessBoard.CHESS_BOARD_SIZE or \
-                            from_col < 0 or from_col >= ChessBoard.CHESS_BOARD_SIZE or \
-                            to_row < 0 or to_row >= ChessBoard.CHESS_BOARD_SIZE or \
-                            to_col < 0 or to_col >= ChessBoard.CHESS_BOARD_SIZE:
-                raise Exception("Move outside of the board!")
-
-            if self.chess_board[from_row][from_col] == 0:
-                raise Exception("No chess piece to move!")
-
             self.chess_board[to_row][to_col] = self.chess_board[from_row][from_col]
             self.chess_board[from_row][from_col] = 0
-
-            return 1
-
-        except Exception as e:
-            print(e)
-            return 0
 
     def print_chessboard(self):
 

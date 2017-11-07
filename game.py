@@ -44,7 +44,7 @@ class Game:
 
             if self.turn == Player.HUMAN:
                 move = self.get_user_move()
-                self.make_move(move)
+                self.make_human_move(move)
 
             elif self.turn == Player.AI:
                 #TODO: MinMax Ai implementation
@@ -67,9 +67,15 @@ class Game:
         move_tuples[1] = (int(moves[1][0]), moves[1][1])
         return move_tuples
 
-    def make_move(self,move):
-        if move != None:
-            self.chessboard.move_piece(move[0], move[1])
-        else:
+    def make_human_move(self, move):
+        try:
+            if move == None:
+                raise Exception
+
+            success = self.chessboard.move_piece(move[0], move[1])
+            if success == 0:
+                raise Exception
+
+        except:
             self.game_state = GameState.WRONG_MOVE
 
