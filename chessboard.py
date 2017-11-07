@@ -1,9 +1,9 @@
-import ChessBoardFileReader
 
 """ Let the white pawn be represented by 1 and the black pawn by 2.
 We agree on the fact that the top of the chess board is the start point for the white pawns
 and the bottom of the chess board is the start for the black ones. """
 
+from chess_board_file_reader import ChessBoardFileReader
 
 class ChessBoard:
 
@@ -41,7 +41,10 @@ class ChessBoard:
             black_pawns_line.append(2)
         return black_pawns_line, empty_line, white_pawns_line
 
+    def print_chessboard(self):
+        print 'Test'
 
 if __name__ == '__main__':
     example_board = ChessBoard()
-    print example_board.chess_board
+    example_board.print_chessboard()
+
