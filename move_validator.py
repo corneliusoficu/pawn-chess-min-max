@@ -41,7 +41,7 @@ class MoveValidator:
             if from_row == to_row:
                 raise Exception("The pawn cannot be moved sideways.")
 
-            color_of_piece = self.game.chessboard[from_row][from_col]
+            color_of_piece = self.game.chessboard.chess_board[from_row][from_col]
 
             if color_of_piece == 1: # the piece is white
                 if from_row > to_row: # wants to move backwards with one step
@@ -61,7 +61,7 @@ class MoveValidator:
                     if MoveValidator.destination_is_empty(to_row, to_col):
                         raise Exception("The destination {row}{column} you chose for the pawn is empty! (moving on diagonal)"
                                         .format(row = move_to[0],column = move_to[1]))
-                    elif self.chessboard.chess_board[to_row][to_col] == 1:
+                    elif self.game.chessboard.chess_board[to_row][to_col] == 1:
                         raise Exception("White cannot capture white pawn!")
 
             if color_of_piece == 2:  # the piece is black
@@ -83,7 +83,7 @@ class MoveValidator:
                         raise Exception(
                             "The destination {row}{column} you chose for the pawn is empty! (moving on diagonal)"
                                 .format(row=move_to[0], column=move_to[1]))
-                    elif self.chessboard.chess_board[to_row][to_col] == 2:
+                    elif self.game.chessboard.chess_board[to_row][to_col] == 2:
                         raise Exception("Black cannot capture black pawn!")
 
             # self.game.chessboard.move_piece(move_from,move_to)
