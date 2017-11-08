@@ -21,6 +21,7 @@ class Game:
         self.chessboard = chessboard
         self.player_piece = {Player.HUMAN: ChessBoard.WHITE_PAWN, Player.AI: ChessBoard.BLACK_PAWN}
         self.move_validator = MoveValidator(self)
+        self.turn = Player.HUMAN
 
     def print_current_turn(self):
 
