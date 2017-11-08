@@ -13,8 +13,6 @@ CELL_COLORS = [WHITE_CHESSBOARD_CELL, GREY_CHESSBOARD_CELL]
 """ Let the white pawn be represented by 1 and the black pawn by 2.
 We agree on the fact that the top of the chess board is the start point for the white pawns
 and the bottom of the chess board is the start for the black ones. """
-
-
 class ChessBoard:
     CHESS_BOARD_SIZE = 8
     WHITE_PAWN = 1
