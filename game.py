@@ -2,6 +2,7 @@ from random import randint
 
 from chessboard import ChessBoard
 from game_engine import GameEngine
+from minmax import MinMax
 from move_validator import MoveValidator
 
 
@@ -26,6 +27,7 @@ class Game:
         self.was_last_move_a_two_step_move = True
         self.position_of_two_steps_pawn = (4,'C')
         self.game_engine = GameEngine(self)
+        self.mini_max = MinMax(self, self.move_validator)
 
     def print_current_turn(self):
 
@@ -37,7 +39,6 @@ class Game:
     def print_initial_message(self):
         print "You play with the white pawns"
         print "Computer plays with the black pawns"
-        self.chessboard.print_chessboard()
 
     def start_chess_game(self, first=Player.NONE):
         self.turn = first
@@ -60,8 +61,9 @@ class Game:
                 self.make_human_move(move)
 
             elif self.turn == Player.AI:
-                # TODO: MinMax Ai implementation
-                pass
+                best_ai_move = self.mini_max.find_best_move_using_minimax()
+                ChessBoard.move_piece(self.chessboard.chess_board, best_ai_move[0], best_ai_move[1])
+
 
             if self.game_state != GameState.WRONG_MOVE:
                 self.turn = (self.turn + 1) % 2
@@ -75,8 +77,8 @@ class Game:
             return None
         moves = move.split(" ")
         move_tuples = [(), ()]
-        move_tuples[0] = (int(moves[0][0]), moves[0][1])
-        move_tuples[1] = (int(moves[1][0]), moves[1][1])
+        move_tuples[0] = (int(moves[0][0]), MoveValidator.convert_character_to_integer(moves[0][1]))
+        move_tuples[1] = (int(moves[1][0]), MoveValidator.convert_character_to_integer(moves[1][1]))
         return move_tuples
 
     def make_human_move(self, move):
@@ -85,8 +87,12 @@ class Game:
             if move == None:
                 raise Exception
 
-            if not self.move_validator.is_move_valid(move[0], move[1]):
+            if not self.move_validator.is_move_valid(self.chessboard.chess_board, move[0], move[1], ChessBoard.WHITE_PAWN):
                 raise Exception
+
+            ChessBoard.move_piece(self.chessboard.chess_board, move[0], move[1])
+
+            self.game_state = GameState.PLAYING
 
         except:
             self.game_state = GameState.WRONG_MOVE

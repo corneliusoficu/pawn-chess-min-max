@@ -9,4 +9,4 @@ if __name__ == '__main__':
     game = Game(chessboard)
     game_engine = GameEngine(game)
 
-    print game_engine.is_draw()
+    print game_engine.is_draw(chessboard.chess_board)

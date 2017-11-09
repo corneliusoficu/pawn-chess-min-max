@@ -5,7 +5,7 @@ if __name__ == '__main__':
     chessboard = ChessBoard()
     game = Game(chessboard)
 
-    game.start_chess_game()
+    game.start_chess_game(0)
 
 
 
