@@ -57,11 +57,19 @@ class MinMax:
                             probable_valid_moves.append(possible_move)
 
 
-        number_of_moves = int(MinMax.FILTER_PERCERNT * len(probable_valid_moves))
+        len_prob_moves = len(probable_valid_moves)
+        number_of_moves = int(MinMax.FILTER_PERCERNT * len_prob_moves)
         chosen_indexes = []
         chosen_move = 0
         while(chosen_move <= number_of_moves):
-            pass
+            random_index = random.randint(0, len_prob_moves - 1)
+            if random_index not in chosen_indexes:
+                chosen_indexes.append(random_index)
+                chosen_move += 1
+
+
+        chosen_valid_moves = [probable_valid_moves[indx] for indx in chosen_indexes]
+        return chosen_valid_moves
 
 
 
