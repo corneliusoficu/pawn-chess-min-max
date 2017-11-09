@@ -170,8 +170,9 @@ class MoveValidator:
 
 
     def process_error_message(self, message, current_player_color):
-        if self.game.turn == 0:
-            print message
+        pass
+        #if self.game.turn == 0:
+           # print message
 
 
 

@@ -12,7 +12,7 @@ class Position:
 
 
 class MinMax:
-    TREE_HEIGHT = 3
+    TREE_HEIGHT = 4
 
     def __init__(self, game, move_validator):
 

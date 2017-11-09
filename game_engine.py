@@ -6,7 +6,7 @@ from pawn_possible_moves_generator import PawnMoveActions
 
 class GameEngine:
 
-    FILTER_PERCERNT = 0.25
+    FILTER_PERCERNT = 0.75
 
     def __init__(self,game):
         self.game = game

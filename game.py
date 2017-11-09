@@ -65,10 +65,20 @@ class Game:
                 ChessBoard.move_piece(self.chessboard.chess_board, best_ai_move[0], best_ai_move[1])
 
 
-            if self.game_state != GameState.WRONG_MOVE:
-                self.turn = (self.turn + 1) % 2
-            else:
+            if self.game_state == GameState.WRONG_MOVE:
                 print "Enter a correct move!"
+
+            elif self.game_engine.is_win(self.chessboard.chess_board):
+                if self.turn == Player.HUMAN:
+                    print "You won!"
+                else:
+                    print "The computer won!"
+                self.game_state = GameState.FINISHED
+            elif self.game_engine.is_draw(self.chessboard.chess_board):
+                print "It's a draw"
+                self.game_state = GameState.FINISHED
+            else:
+                self.turn = (self.turn + 1) % 2
 
     def get_user_move(self):
         move = raw_input("Enter your move: ")
