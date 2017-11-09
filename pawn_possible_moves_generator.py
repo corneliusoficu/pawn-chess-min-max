@@ -1,4 +1,5 @@
 from chessboard import ChessBoard
+from move_validator import MoveValidator
 
 
 class PawnMoveActions:
@@ -19,3 +20,14 @@ class PawnMoveActions:
             unvalidated_possible_moves.append((current_row - 1, current_col - 1))  # diagonal, left
             unvalidated_possible_moves.append((current_row - 1, current_col + 1))  # diagonal, right
         return unvalidated_possible_moves
+
+    @staticmethod
+    def generate_validated_moves(pawn_color, pawn_position_as_integers, matrix):
+        unvalidated_possible_moves = PawnMoveActions.generate_moves(
+            pawn_color=pawn_color, pawn_position_as_integers=pawn_position_as_integers
+        )
+        validated_moves = []
+        for possible_move in unvalidated_possible_moves:
+            if MoveValidator.is_move_valid(matrix, pawn_position_as_integers, possible_move, pawn_color):
+                validated_moves.append(possible_move)
+        return validated_moves
