@@ -1,6 +1,7 @@
 from random import randint
 
 from chessboard import ChessBoard
+from game_engine import GameEngine
 from move_validator import MoveValidator
 
 
@@ -24,6 +25,7 @@ class Game:
         self.turn = Player.HUMAN
         self.was_last_move_a_two_step_move = True
         self.position_of_two_steps_pawn = (4,'C')
+        self.game_engine = GameEngine(self)
 
     def print_current_turn(self):
 

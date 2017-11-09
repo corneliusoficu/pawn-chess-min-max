@@ -3,6 +3,7 @@ from game import Game
 from move_validator import MoveValidator
 
 if __name__ == '__main__':
+
     chessboard = ChessBoard("input-matrix.txt", True)
     chessboard.print_chessboard()
     game = Game(chessboard)
