@@ -25,6 +25,6 @@ if __name__ == '__main__':
 
     print validator.can_white_capture_if_black_moves_two()
 
-
+    print "did someone win?: ",validator.someone_won(chessboard.chess_board)
 
 

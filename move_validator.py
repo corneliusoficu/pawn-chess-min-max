@@ -155,12 +155,22 @@ class MoveValidator:
                 return True
         return False
 
-    def black_reached_finish(self):
-        if 2 in self.game.chessboard.chess_board[ChessBoard.CHESS_BOARD_SIZE-1]:
+    @staticmethod
+    def someone_won(matrix):
+        if MoveValidator.white_reached_finish(matrix) \
+                or MoveValidator.black_reached_finish(matrix):
             return True
         return False
 
-    def white_reached_finish(self):
-        if 1 in self.game.chessboard.chess_board[ChessBoard.CHESS_BOARD_SIZE-1]:
+    @staticmethod
+    def black_reached_finish(matrix):
+        if 2 in matrix[0]:
             return True
         return False
+
+    @staticmethod
+    def white_reached_finish(matrix):
+        if 1 in matrix[ChessBoard.CHESS_BOARD_SIZE-1]:
+            return True
+        return False
+
