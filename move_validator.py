@@ -155,3 +155,12 @@ class MoveValidator:
                 return True
         return False
 
+    def black_reached_finish(self):
+        if 2 in self.game.chessboard.chess_board[ChessBoard.CHESS_BOARD_SIZE-1]:
+            return True
+        return False
+
+    def white_reached_finish(self):
+        if 1 in self.game.chessboard.chess_board[ChessBoard.CHESS_BOARD_SIZE-1]:
+            return True
+        return False
