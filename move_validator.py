@@ -49,7 +49,6 @@ class MoveValidator:
                 if from_row > to_row:  # wants to move backwards with one step
                     raise Exception("You cannot move the pawn backwards!")
 
-
                 if from_col == to_col and from_row == to_row - 1:  # wants to move forward with one step
                     if not self.destination_is_empty(to_row, to_col):
                         raise Exception("The destination {row}{column} you chose for the pawn is already taken!"
@@ -62,7 +61,7 @@ class MoveValidator:
                     elif self.game.chessboard.chess_board[2][to_col] != 0:  # there is a piece between source and destination
                         raise Exception("Cannot move pawn over the pawn in front!")
 
-                    # TODO: Register move as possible en passant capture for adversary
+                        # TODO: Register move as possible en passant capture for adversary
 
                 elif abs(to_row - from_row) > 1 or abs(to_col - from_col) > 1: # wants to move too far away from current position
                     raise Exception("The destination {row}{column} is two far away for a valid move!".format(row = move_to[0], column = move_to[1]))
@@ -76,9 +75,9 @@ class MoveValidator:
                     elif self.game.chessboard.chess_board[to_row][to_col] == ChessBoard.WHITE_PAWN:
                         raise Exception("White cannot capture white pawn!")
 
-                    # TODO: Check if en passant against adversary is possible
+                        # TODO: Check if en passant against adversary is possible
 
-                    # TODO: Capture enemy pawn
+                        # TODO: Capture enemy pawn
 
 
             if color_of_piece == ChessBoard.BLACK_PAWN:  # the piece is white
@@ -98,7 +97,7 @@ class MoveValidator:
                     elif self.game.chessboard.chess_board[5][to_col] != 0:  # there is a piece between source and destination
                         raise Exception("Cannot move pawn over the pawn in front!")
 
-                    # TODO: Register move as possible en passant capture for adversary
+                        # TODO: Register move as possible en passant capture for adversary
 
                 elif abs(to_row - from_row) > 1 or abs(to_col - from_col) > 1: # wants to move too far away from current position
                     raise Exception("The destination {row}{column} is two far away for a valid move!".format(row = move_to[0], column = move_to[1]))
@@ -112,9 +111,9 @@ class MoveValidator:
                     elif self.game.chessboard.chess_board[to_row][to_col] == ChessBoard.BLACK_PAWN:
                         raise Exception("Black cannot capture black pawn!")
 
-                    # TODO: Check if en passant against adversary is possible
+                        # TODO: Check if en passant against adversary is possible
 
-                    # TODO: Capture enemy pawn
+                        # TODO: Capture enemy pawn
 
             # self.game.chessboard.move_piece(move_from,move_to)
 
@@ -131,3 +130,28 @@ class MoveValidator:
 
     def destination_is_empty(self, to_row, to_col):
         return self.game.chessboard.chess_board[to_row][to_col] == 0
+
+    def can_white_capture_if_black_moves_two(self):
+        if self.game.was_last_move_a_two_step_move and self.game.turn == 0: # human == 0 == white
+            black_piece_col = ord(self.game.position_of_two_steps_pawn[1]) - ord('A')
+            # if there is a white piece to the left or to the right of that black piece that moved two
+            if black_piece_col-1 > 0 \
+                    and self.game.chessboard.chess_board[4][black_piece_col-1] == ChessBoard.WHITE_PAWN:
+                return True
+            if black_piece_col + 1 < ChessBoard.CHESS_BOARD_SIZE \
+                    and self.game.chessboard.chess_board[4][black_piece_col+1] == ChessBoard.WHITE_PAWN:
+                return True
+        return False
+
+    def can_black_capture_if_white_moves_two(self):
+        if self.game.was_last_move_a_two_step_move and self.game.turn == 1: # ai == 1 == black
+            white_piece_col = ord(self.game.position_of_two_steps_pawn[1]) - ord('A')
+            # if there is a black piece to the left or to the right of that white piece that moved 2 steps
+            if white_piece_col-1 > 0 \
+                    and self.game.chessboard.chess_board[4][white_piece_col-1] == ChessBoard.BLACK_PAWN:
+                return True
+            if white_piece_col + 1 < ChessBoard.CHESS_BOARD_SIZE \
+                    and self.game.chessboard.chess_board[4][white_piece_col+1] == ChessBoard.BLACK_PAWN:
+                return True
+        return False
+

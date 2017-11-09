@@ -22,6 +22,8 @@ class Game:
         self.player_piece = {Player.HUMAN: ChessBoard.WHITE_PAWN, Player.AI: ChessBoard.BLACK_PAWN}
         self.move_validator = MoveValidator(self)
         self.turn = Player.HUMAN
+        self.was_last_move_a_two_step_move = True
+        self.position_of_two_steps_pawn = (4,'C')
 
     def print_current_turn(self):
 

@@ -22,5 +22,8 @@ if __name__ == '__main__':
     validator.is_move_valid((1,'A'),(4,'D')) # illegal pawn move, too far
     print validator.error_message
 
+    print validator.can_white_capture_if_black_moves_two()
+
+
 
 
