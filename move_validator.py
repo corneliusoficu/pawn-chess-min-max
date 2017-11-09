@@ -52,13 +52,13 @@ class MoveValidator:
                 return False
 
             if from_col == to_col and from_row == to_row - 1:  # wants to move forward with one step
-                if not MoveValidator.destination_is_empty(to_row, to_col):
+                if not MoveValidator.destination_is_empty(matrix,to_row, to_col):
                     MoveValidator.process_error_message("The destination {row}{column} you chose for the pawn is already taken!"
                                                         .format(row=move_to[0], column=move_to[1]))
                     return False
 
             elif from_col == to_col and from_row == 1 and to_row == 3:  # wants to move forward with two steps
-                if not MoveValidator.destination_is_empty(to_row, to_col):
+                if not MoveValidator.destination_is_empty(matrix,to_row, to_col):
                     MoveValidator.process_error_message("The destination {row}{column} you chose for the pawn is already taken!"
                                                         .format(row=move_to[0], column=move_to[1]))
                     return False
@@ -204,4 +204,5 @@ class MoveValidator:
     def process_error_message(message, current_player_color):
         if current_player_color == 1:
             print message
+
 

@@ -7,10 +7,11 @@ from pawn_possible_moves_generator import PawnMoveActions
 
 
 class Position:
-    def __init__(self, chessboard, to_move, current_move = None):
+    def __init__(self, chessboard, to_move, current_move = None, has_eaten_enemy = 0):
         self.to_move = to_move
         self.chessboard = copy.deepcopy(chessboard)
         self.current_move = current_move
+        self.has_eaten_enemy = has_eaten_enemy
 
 class MinMax:
 
@@ -36,7 +37,7 @@ class MinMax:
             if position.to_move == ChessBoard.BLACK_PAWN:
                 best_score = -float("inf")
                 best_move = None
-                valid_moves = self.generate_legal_moves(position.chessboard,position.to_move)
+                valid_moves = self.generate_random_moves(position.chessboard, position.to_move)
                 for move in valid_moves:
                     new_position = self.make_move_for_position(position,move)
                     score, move = self.minimax(new_position, depth - 1)
@@ -44,26 +45,43 @@ class MinMax:
                         best_score = score
                         best_move = move
                 return (best_score, best_move)
+            else:
+                best_score = float("inf")
+                best_move = None
+                valid_moves = self.generate_random_moves(position.chessboard, position.to_move)
+                for move in valid_moves:
+                    new_position = self.make_move_for_position(position,move)
+                    score, move = self.minimax(new_position, depth - 1)
+
+                    if score < best_score:
+                        best_score  = score
+                        best_move = move
+                return (best_score, best_move)
 
 
     def evaluate_position(self, position):
         pass
 
-    def generate_legal_moves(self, chessboard, pawn_type):
+    def generate_all_legal_moves(self, chessboard, pawn_type):
 
         probable_valid_moves = []
-
-        for row in range(0,ChessBoard.CHESS_BOARD_SIZE):
+        for row in range(0, ChessBoard.CHESS_BOARD_SIZE):
             for col in range(0, ChessBoard.CHESS_BOARD_SIZE):
                 if pawn_type == chessboard[row][col]:
-                    #TODO pick with certain probability
-                    list_moves = PawnMoveActions.generate_moves(pawn_type, [row,col])
+
+                    list_moves = PawnMoveActions.generate_moves(pawn_type, [row, col])
                     for move in list_moves:
-                        move_from = (row,col)
+                        move_from = (row, col)
                         move_to = (move[0], move[1])
                         if self.move_validator.is_move_valid(chessboard, move_from, move_to, pawn_type):
                             possible_move = [move_from, move_to]
                             probable_valid_moves.append(possible_move)
+
+        return probable_valid_moves
+
+    def generate_random_moves(self, chessboard, pawn_type):
+
+        probable_valid_moves = self.generate_all_legal_moves(chessboard, pawn_type)
 
 
         len_prob_moves = len(probable_valid_moves)
@@ -83,12 +101,14 @@ class MinMax:
     def make_move_for_position(self,position, move):
 
         new_chessboard_matrix = copy.deepcopy(position.chessboard)
-        ChessBoard.move_piece(new_chessboard_matrix,move[0],move[1])
+        has_eaten_enemy = ChessBoard.move_piece(new_chessboard_matrix,move[0],move[1])
+
         if position.to_move == ChessBoard.BLACK_PAWN:
             new_to_move = ChessBoard.WHITE_PAWN
         else:
             new_to_move = ChessBoard.BLACK_PAWN
-        new_position = Position(new_chessboard_matrix, new_to_move, move)
+
+        new_position = Position(new_chessboard_matrix, new_to_move, move, has_eaten_enemy)
         return new_position
 
 
