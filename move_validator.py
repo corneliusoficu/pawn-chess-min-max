@@ -116,7 +116,7 @@ class MoveValidator:
                                                     .format(row = move_to[0], column = move_to[1]), current_player_color)
                 return False
 
-            elif from_col == to_col - 1 or from_col == to_col + 1 and from_row == to_row - 1:
+            elif (from_col == to_col - 1 or from_col == to_col + 1) and from_row == to_row - 1:
                 # move forward, on the diagonal
                 if MoveValidator.destination_is_empty(matrix, to_row, to_col):
                     MoveValidator.process_error_message(
