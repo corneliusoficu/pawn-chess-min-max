@@ -19,9 +19,9 @@ class MoveValidator:
         to_row = move_to[0]
         to_col = move_to[1]
 
-        MoveValidator.is_move_source_or_destination_outside_the_board(
+        if MoveValidator.is_move_source_or_destination_outside_the_board(
             from_col, from_row, to_col, to_row, current_player_color
-        )
+        ): return False
 
         # The source of the move "contains" no pawn to be moved === the value of that place is neither 1, nor 2
         if matrix[from_row][from_col] == 0:
@@ -138,19 +138,20 @@ class MoveValidator:
         if from_row < 0 or from_row >= ChessBoard.CHESS_BOARD_SIZE:
             MoveValidator.process_error_message("Source row, {value}, is outside of the board!"
                                                 .format(value=from_row), current_player_color)
-            return False
+            return True
         if from_col < 0 or from_col >= ChessBoard.CHESS_BOARD_SIZE:
             MoveValidator.process_error_message("Source column, {value}, is outside of the board!"
                                                 .format(value=from_col), current_player_color)
-            return False
+            return True
         if to_row < 0 or to_row >= ChessBoard.CHESS_BOARD_SIZE:
             MoveValidator.process_error_message("Destination row, {value}, is outside of the board!"
                                                 .format(value=to_row), current_player_color)
-            return False
+            return True
         if to_col < 0 or to_col >= ChessBoard.CHESS_BOARD_SIZE:
             MoveValidator.process_error_message("Destination column, {value}, is outside of the board!"
                                                 .format(value=to_row), current_player_color)
-            return False
+            return True
+        return False
 
     @staticmethod
     def destination_is_empty(matrix, to_row, to_col):
