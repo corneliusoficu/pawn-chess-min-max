@@ -13,122 +13,144 @@ class MoveValidator:
 
     @staticmethod
     def is_move_valid(matrix, move_from, move_to, current_player_color):
-        try:
-            from_row = move_from[0]
-            from_col = move_from[1]
-            to_row = move_to[0]
-            to_col = move_to[1]
 
-            MoveValidator.is_move_source_or_destination_outside_the_board(from_col, from_row, to_col, to_row)
+        from_row = move_from[0]
+        from_col = move_from[1]
+        to_row = move_to[0]
+        to_col = move_to[1]
 
-            # The source of the move "contains" no pawn to be moved === the value of that place is neither 1, nor 2
-            if matrix[from_row][from_col] == 0:
-                raise Exception("No chess piece to move!")
+        MoveValidator.is_move_source_or_destination_outside_the_board(
+            from_col, from_row, to_col, to_row, current_player_color
+        )
 
-            # Source is the same as destination
-            if from_row == to_row and from_col == to_col:
-                raise Exception("You cannot move pawn to the same position from which you want to move!")
-
-            # The pawn tries to move sideways
-            if from_row == to_row:
-                raise Exception("The pawn cannot be moved sideways.")
-
-            color_of_piece = matrix[from_row][from_col]
-
-            # The current player tries to move opponent's piece
-            if color_of_piece != current_player_color:
-                raise Exception("You cannot move the other player's pawn!")
-
-            if color_of_piece == ChessBoard.WHITE_PAWN:  # the piece is white
-
-                if from_row > to_row:  # wants to move backwards with one step
-                    raise Exception("You cannot move the pawn backwards!")
-
-                if from_col == to_col and from_row == to_row - 1:  # wants to move forward with one step
-                    if not MoveValidator.destination_is_empty(to_row, to_col):
-                        raise Exception("The destination {row}{column} you chose for the pawn is already taken!"
-                                        .format(row=move_to[0], column=move_to[1]))
-
-                elif from_col == to_col and from_row == 1 and to_row == 3:  # wants to move forward with two steps
-                    if not MoveValidator.destination_is_empty(to_row, to_col):
-                        raise Exception("The destination {row}{column} you chose for the pawn is already taken!"
-                                        .format(row=move_to[0], column=move_to[1]))
-                    elif matrix[2][to_col] != 0:  # there is a piece between source and destination
-                        raise Exception("Cannot move pawn over the pawn in front!")
-
-                        # TODO: Register move as possible en passant capture for adversary
-
-                elif abs(to_row - from_row) > 1 or abs(to_col - from_col) > 1: # wants to move too far away from current position
-                    raise Exception("The destination {row}{column} is two far away for a valid move!".format(row = move_to[0], column = move_to[1]))
-
-                elif (from_col == to_col - 1 or from_col == to_col + 1) and from_row == to_row + 1:
-                    # move forward, on the diagonal
-                    if MoveValidator.destination_is_empty(matrix,to_row, to_col):
-                        raise Exception(
-                            "The destination {row}{column} you chose for the pawn is empty! (moving on diagonal)"
-                                .format(row=move_to[0], column=move_to[1]))
-                    elif matrix[to_row][to_col] == ChessBoard.WHITE_PAWN:
-                        raise Exception("White cannot capture white pawn!")
-
-                        # TODO: Check if en passant against adversary is possible
-
-                        # TODO: Capture enemy pawn
-
-            if color_of_piece == ChessBoard.BLACK_PAWN:  # the piece is black
-
-                if from_row < to_row:  # wants to move backwards with one step
-                    raise Exception("You cannot move the pawn backwards!")
-
-                if from_col == to_col and from_row == to_row + 1:  # wants to move towards the white's start line with one step
-                    if not MoveValidator.destination_is_empty(to_row, to_col):
-                        raise Exception("The destination {row}{column} you chose for the pawn is already taken!"
-                                        .format(row=move_from[0], column=move_from[1]))
-
-                elif from_col == to_col and from_row == 6 and to_row == 4:  # wants to move forward with two steps
-                    if not MoveValidator.destination_is_empty(to_row, to_col):
-                        raise Exception("The destination {row}{column} you chose for the pawn is already taken!"
-                                        .format(row=move_from[0], column=move_from[1]))
-                    elif matrix[5][to_col] != 0:  # there is a piece between source and destination
-                        raise Exception("Cannot move pawn over the pawn in front!")
-
-                        # TODO: Register move as possible en passant capture for adversary
-
-                elif abs(to_row - from_row) > 1 or abs(to_col - from_col) > 1: # wants to move too far away from current position
-                    raise Exception("The destination {row}{column} is two far away for a valid move!".format(row = move_to[0], column = move_to[1]))
-
-                elif from_col == to_col - 1 or from_col == to_col + 1 and from_row == to_row - 1:
-                    # move forward, on the diagonal
-                    if MoveValidator.destination_is_empty(to_row, to_col):
-                        raise Exception(
-                            "The destination {row}{column} you chose for the pawn is empty! (moving on diagonal)"
-                                .format(row=move_to[0], column=move_to[1]))
-                    elif matrix[to_row][to_col] == ChessBoard.BLACK_PAWN:
-                        raise Exception("Black cannot capture black pawn!")
-
-                        # TODO: Check if en passant against adversary is possible
-
-                        # TODO: Capture enemy pawn
-
-            # self.game.chessboard.move_piece(move_from,move_to)
-
-            error_message = ''
-            return True
-
-        except Exception as e:
-            error_message = e
+        # The source of the move "contains" no pawn to be moved === the value of that place is neither 1, nor 2
+        if matrix[from_row][from_col] == 0:
+            MoveValidator.process_error_message("No chess piece to move!", current_player_color)
             return False
 
+        # Source is the same as destination
+        if from_row == to_row and from_col == to_col:
+            MoveValidator.process_error_message("You cannot move pawn to the same position from which you want to move!",current_player_color)
+            return False
+
+        # The pawn tries to move sideways
+        if from_row == to_row:
+            MoveValidator.process_error_message("The pawn cannot be moved sideways.",current_player_color)
+            return False
+
+        color_of_piece = matrix[from_row][from_col]
+
+        # The current player tries to move opponent's piece
+        if color_of_piece != current_player_color:
+            MoveValidator.process_error_message("You cannot move the other player's pawn!",current_player_color)
+            return False
+
+        if color_of_piece == ChessBoard.WHITE_PAWN:  # the piece is white
+
+            if from_row > to_row:  # wants to move backwards with one step
+                MoveValidator.process_error_message("You cannot move the pawn backwards!",current_player_color)
+                return False
+
+            if from_col == to_col and from_row == to_row - 1:  # wants to move forward with one step
+                if not MoveValidator.destination_is_empty(to_row, to_col):
+                    MoveValidator.process_error_message("The destination {row}{column} you chose for the pawn is already taken!"
+                                                        .format(row=move_to[0], column=move_to[1]))
+                    return False
+
+            elif from_col == to_col and from_row == 1 and to_row == 3:  # wants to move forward with two steps
+                if not MoveValidator.destination_is_empty(to_row, to_col):
+                    MoveValidator.process_error_message("The destination {row}{column} you chose for the pawn is already taken!"
+                                                        .format(row=move_to[0], column=move_to[1]))
+                    return False
+                elif matrix[2][to_col] != 0:  # there is a piece between source and destination
+                    MoveValidator.process_error_message("Cannot move pawn over the pawn in front!", current_player_color)
+                    return False
+
+                    # TODO: Register move as possible en passant capture for adversary
+
+            elif abs(to_row - from_row) > 1 or abs(to_col - from_col) > 1: # wants to move too far away from current position
+                MoveValidator.process_error_message("The destination {row}{column} is two far away for a valid move!"
+                                                    .format(row = move_to[0], column = move_to[1]), current_player_color)
+                return False
+
+            elif (from_col == to_col - 1 or from_col == to_col + 1) and from_row == to_row + 1:
+                # move forward, on the diagonal
+                if MoveValidator.destination_is_empty(matrix,to_row, to_col):
+                    MoveValidator.process_error_message(
+                        "The destination {row}{column} you chose for the pawn is empty! (moving on diagonal)"
+                            .format(row=move_to[0], column=move_to[1]), current_player_color)
+                    return False
+                elif matrix[to_row][to_col] == ChessBoard.WHITE_PAWN:
+                    MoveValidator.process_error_message("White cannot capture white pawn!", current_player_color)
+                    return False
+
+                    # TODO: Check if en passant against adversary is possible
+
+                    # TODO: Capture enemy pawn
+
+        if color_of_piece == ChessBoard.BLACK_PAWN:  # the piece is black
+
+            if from_row < to_row:  # wants to move backwards with one step
+                MoveValidator.process_error_message("You cannot move the pawn backwards!", current_player_color)
+                return False
+
+            if from_col == to_col and from_row == to_row + 1:  # wants to move towards the white's start line with one step
+                if not MoveValidator.destination_is_empty(matrix, to_row, to_col):
+                    MoveValidator.process_error_message("The destination {row}{column} you chose for the pawn is already taken!"
+                                                        .format(row=move_from[0], column=move_from[1]), current_player_color)
+                    return False
+
+            elif from_col == to_col and from_row == 6 and to_row == 4:  # wants to move forward with two steps
+                if not MoveValidator.destination_is_empty(matrix, to_row, to_col):
+                    MoveValidator.process_error_message("The destination {row}{column} you chose for the pawn is already taken!"
+                                                        .format(row=move_from[0], column=move_from[1]), current_player_color)
+                    return False
+                elif matrix[5][to_col] != 0:  # there is a piece between source and destination
+                    MoveValidator.process_error_message("Cannot move pawn over the pawn in front!", current_player_color)
+                    return False
+
+                    # TODO: Register move as possible en passant capture for adversary
+
+            elif abs(to_row - from_row) > 1 or abs(to_col - from_col) > 1: # wants to move too far away from current position
+                MoveValidator.process_error_message("The destination {row}{column} is too far away for a valid move!"
+                                                    .format(row = move_to[0], column = move_to[1]), current_player_color)
+                return False
+
+            elif from_col == to_col - 1 or from_col == to_col + 1 and from_row == to_row - 1:
+                # move forward, on the diagonal
+                if MoveValidator.destination_is_empty(matrix, to_row, to_col):
+                    MoveValidator.process_error_message(
+                        "The destination {row}{column} you chose for the pawn is empty! (moving on diagonal)"
+                            .format(row=move_to[0], column=move_to[1]), current_player_color)
+                    return False
+                elif matrix[to_row][to_col] == ChessBoard.BLACK_PAWN:
+                    MoveValidator.process_error_message("Black cannot capture black pawn!",current_player_color)
+                    return False
+
+                    # TODO: Check if en passant against adversary is possible
+
+                    # TODO: Capture enemy pawn
+        return True
+
     @staticmethod
-    def is_move_source_or_destination_outside_the_board(from_col, from_row, to_col, to_row):
+    def is_move_source_or_destination_outside_the_board(from_col, from_row, to_col, to_row, current_player_color):
         # Trying to move pawn outside the board
         if from_row < 0 or from_row >= ChessBoard.CHESS_BOARD_SIZE:
-            raise Exception("Source row, {value}, is outside of the board!".format(value=from_row))
+            MoveValidator.process_error_message("Source row, {value}, is outside of the board!"
+                                                .format(value=from_row), current_player_color)
+            return False
         if from_col < 0 or from_col >= ChessBoard.CHESS_BOARD_SIZE:
-            raise Exception("Source column, {value}, is outside of the board!".format(value=from_col))
+            MoveValidator.process_error_message("Source column, {value}, is outside of the board!"
+                                                .format(value=from_col), current_player_color)
+            return False
         if to_row < 0 or to_row >= ChessBoard.CHESS_BOARD_SIZE:
-            raise Exception("Destination row, {value}, is outside of the board!".format(value=to_row))
+            MoveValidator.process_error_message("Destination row, {value}, is outside of the board!"
+                                                .format(value=to_row), current_player_color)
+            return False
         if to_col < 0 or to_col >= ChessBoard.CHESS_BOARD_SIZE:
-            raise Exception("Destination column, {value}, is outside of the board!".format(value=to_row))
+            MoveValidator.process_error_message("Destination column, {value}, is outside of the board!"
+                                                .format(value=to_row), current_player_color)
+            return False
 
     @staticmethod
     def destination_is_empty(matrix, to_row, to_col):
@@ -176,4 +198,9 @@ class MoveValidator:
                     and self.game.chessboard.chess_board[4][white_piece_col+1] == ChessBoard.BLACK_PAWN:
                 return True
         return False
+
+    @staticmethod
+    def process_error_message(message, current_player_color):
+        if current_player_color == 1:
+            print message
 
