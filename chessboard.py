@@ -54,16 +54,24 @@ class ChessBoard:
     """Core piece move in the chess board matrix, 
     pawn chess game validation must be done beforehand!"""
 
-    def move_piece(self, from_tuple, to_tuple):
+    @staticmethod
+    def move_piece(matrix, from_tuple, to_tuple):
+
+            has_eaten_enemy_pawn = 0
 
             from_row = from_tuple[0]
-            from_col = ord(from_tuple[1]) - ord('A')
+            from_col = from_tuple[1]
 
             to_row = to_tuple[0]
-            to_col = ord(to_tuple[1]) - ord('A')
+            to_col = to_tuple[1]
 
-            self.chess_board[to_row][to_col] = self.chess_board[from_row][from_col]
-            self.chess_board[from_row][from_col] = 0
+            if matrix[to_row][to_col] != 0:
+                has_eaten_enemy_pawn = 1
+
+            matrix[to_row][to_col] = matrix[from_row][from_col]
+            matrix[from_row][from_col] = 0
+
+            return has_eaten_enemy_pawn
 
     def print_chessboard(self):
 
@@ -115,5 +123,3 @@ if __name__ == '__main__':
     example_board = ChessBoard()
     example_board.print_chessboard()
 
-    example_board.move_piece((1, 'A'), (4, 'E'))
-    example_board.print_chessboard()

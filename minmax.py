@@ -7,14 +7,15 @@ from pawn_possible_moves_generator import PawnMoveActions
 
 
 class Position:
-    def __init__(self, chessboard, to_move):
+    def __init__(self, chessboard, to_move, current_move = None):
         self.to_move = to_move
         self.chessboard = copy.deepcopy(chessboard)
+        self.current_move = current_move
 
 class MinMax:
 
     TREE_HEIGHT = 4
-    FILTER_PERCERNT = 0.25
+    FILTER_PERCERNT = 0.50
 
     def __init__(self, game, move_validator):
 
@@ -35,6 +36,14 @@ class MinMax:
             if position.to_move == ChessBoard.BLACK_PAWN:
                 best_score = -float("inf")
                 best_move = None
+                valid_moves = self.generate_legal_moves(position.chessboard,position.to_move)
+                for move in valid_moves:
+                    new_position = self.make_move_for_position(position,move)
+                    score, move = self.minimax(new_position, depth - 1)
+                    if score > best_score:
+                        best_score = score
+                        best_move = move
+                return (best_score, best_move)
 
 
     def evaluate_position(self, position):
@@ -71,12 +80,16 @@ class MinMax:
         chosen_valid_moves = [probable_valid_moves[indx] for indx in chosen_indexes]
         return chosen_valid_moves
 
+    def make_move_for_position(self,position, move):
 
-
-
-
-
-
+        new_chessboard_matrix = copy.deepcopy(position.chessboard)
+        ChessBoard.move_piece(new_chessboard_matrix,move[0],move[1])
+        if position.to_move == ChessBoard.BLACK_PAWN:
+            new_to_move = ChessBoard.WHITE_PAWN
+        else:
+            new_to_move = ChessBoard.BLACK_PAWN
+        new_position = Position(new_chessboard_matrix, new_to_move, move)
+        return new_position
 
 
 if __name__ == '__main__':
@@ -84,7 +97,8 @@ if __name__ == '__main__':
         game = Game(chess_board)
         mini_max = MinMax(game,None)
 
-        mini_max.generate_legal_moves(chess_board.chess_board,ChessBoard.BLACK_PAWN)
+        #mini_max.generate_legal_moves(chess_board.chess_board,ChessBoard.BLACK_PAWN)
+        mini_max.find_best_move_using_minimax()
 
 
 
